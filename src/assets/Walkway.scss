@@ -1,0 +1,27 @@
+.walkway {
+    &__content {
+        position: relative;
+        height: 90%;
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    &__footer {
+        padding: 0 20px;
+        &--operation {
+            float: left;
+            width: 100%;
+            .count {
+                margin-right: 25px;
+            }
+            .select {
+                width: 120px;
+                margin-left: 25px;
+                margin-right: 25px;
+            }
+            .about {
+                float: right;
+            }
+        }
+    }
+}

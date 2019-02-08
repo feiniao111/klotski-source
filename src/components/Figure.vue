@@ -1,0 +1,121 @@
+<!-- 人物 -->
+<template>
+  <figure class="person" :style="styleObj" :class="classObj" @click="handleClick">
+      <i class="banner" v-if="!isEmpty" v-show="active"></i>
+      <!-- <img :src='"../assets/img/" + name + ".svg"' style="width: 100%; height: 100%" v-if="!isEmpty"> -->
+      <!-- <iframe :src='"../assets/img/" + name + ".svg"' width="100%" height="100%" type="image/svg+xml" v-if="!isEmpty"> 
+      </iframe> -->
+      <!-- <object :data='"../assets/img/" + name + ".svg"' width="100%" height="100%" type="image/svg+xml" /> -->
+
+        <!-- <object data="svgDemo.svg" type="image/svg+xml" /> 
+        <iframe src="svgDemo.svg" /> -->
+
+      <img :src='"../assets/img/" + name + ".svg"' style="width: 100%; height: 100%" v-if="!isEmpty&&!isSafari">
+      <!--safari无法下载svg的img-->
+      <i :class="'person--' + name" v-else-if="!isEmpty&&isSafari"></i>
+
+      <strong v-if="x==1&&y==4&&isEmpty">出</strong>
+      <strong v-else-if="x==2&&y==4&&isEmpty">口</strong>
+  </figure>
+</template>
+
+
+<script>
+const unitLenW = 100 / 4.0;
+const unitLenH = 90 / 5.0;
+const unit = "%";
+export default {
+  props: {
+    width: Number,
+    height: Number,
+    name: {
+      type: String,
+      default: "blank"
+    },
+    active: Boolean,
+    uid: String, //唯一
+    x0: Number,
+    y0: Number,
+    isEmpty: Boolean,
+    action: Array //可行动方向 ['left', 'right', 'top', 'bottom']
+  },
+  data() {
+    return {
+      x: this.x0,
+      y: this.y0,
+      isSafari: /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent)
+    };
+  },
+  computed: {
+    styleObj() {
+      return {
+        left: this.x * unitLenW + unit,
+        top: this.y * unitLenH + unit,
+        // transform: translate(this.x * unitLenW + unit, this.y * unitLenH + unit),
+        width: this.width * unitLenW + unit,
+        height: this.height * unitLenH + unit
+      };
+    },
+    classObj() {
+      return {
+        active: this.active,
+        isEmpty: this.isEmpty
+      };
+    }
+  },
+  methods: {
+    reset() {
+      this.x = this.x0;
+      this.y = this.y0;
+    },
+    getX() {
+      return this.x;
+    },
+    getY() {
+      return this.y;
+    },
+    setX(value) {
+      this.x = value;
+    },
+    setY(value) {
+      this.y = value;
+    },
+    move(direct) {
+      switch (direct) {
+        case "left":
+          this.x -= this.width;
+          break;
+        case "right":
+          this.x += this.width;
+          break;
+        case "top":
+          this.y -= this.height;
+          break;
+        case "bottom":
+          this.y += this.height;
+          break;
+      }
+    },
+    handleClick() {
+      if (this.isEmpty) {
+        this.movAction();
+      } else {
+        this.reqAction();
+      }
+    },
+    reqAction() {
+      this.$emit(
+        "reqAction",
+        this.uid,
+        this.x,
+        this.y,
+        this.width,
+        this.height
+      );
+    },
+    movAction() {
+      this.$emit("movAction", this.uid, this.x, this.y);
+    }
+  }
+};
+</script>

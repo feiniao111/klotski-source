@@ -1,0 +1,25 @@
+.person {
+    border: 1px solid #DCDFE6;
+    z-index: 3;
+    margin: 0;
+    position: absolute;
+    background-color: #fff; 
+    &.isEmpty {
+        background-color: #E6A23C;
+    }
+    &::hover {
+        border-color: #E4E7ED;
+    }
+
+    &.active {
+        // border: 2px solid #E4E7ED;
+    }
+
+    .banner {
+        position: absolute;
+    }
+
+    strong {
+        font-size: 3rem;
+    }
+}
