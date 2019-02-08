@@ -10,12 +10,13 @@
         <!-- <object data="svgDemo.svg" type="image/svg+xml" /> 
         <iframe src="svgDemo.svg" /> -->
 
-      <img :src='"../assets/img/" + name + ".svg"' style="width: 100%; height: 100%" v-if="!isEmpty&&!isSafari">
+      <img :src='"../assets/img/" + name + ".svg"' style="width: 100%; height: 100%" v-if="!isEmpty&&isSVGAvail">
       <!--safari无法下载svg的img-->
-      <i :class="'person--' + name" v-else-if="!isEmpty&&isSafari"></i>
+      <i :class="'person--' + name" v-else-if="!isEmpty&&!isSVGAvail"></i>
 
       <strong v-if="x==1&&y==4&&isEmpty">出</strong>
       <strong v-else-if="x==2&&y==4&&isEmpty">口</strong>
+      
   </figure>
 </template>
 
@@ -43,17 +44,26 @@ export default {
     return {
       x: this.x0,
       y: this.y0,
-      isSafari: /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent)
+      animateOver: false,
+      isSafari: /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent),
+      isIphoneWechatEmbed: (/iPhone/.test(navigator.userAgent) || (/iPad/.test(navigator.userAgent))) 
+                            && /MicroMessenger/.test(navigator.userAgent)
     };
   },
   computed: {
+    isSVGAvail() {
+      return !this.isSafari&&!this.isIphoneWechatEmbed;
+    },
     styleObj() {
+      
       return {
         left: this.x * unitLenW + unit,
         top: this.y * unitLenH + unit,
         // transform: translate(this.x * unitLenW + unit, this.y * unitLenH + unit),
         width: this.width * unitLenW + unit,
-        height: this.height * unitLenH + unit
+        height: this.height * unitLenH + unit,
+        transitionProperty: 'left,top',
+        transitionDuration: this.isEmpty ? 0 : '0.8s'
       };
     },
     classObj() {
@@ -64,6 +74,14 @@ export default {
     }
   },
   methods: {
+    beforeEnter: function (el) {
+      // ...
+      this.animateOver = false;
+    },
+    afterEnter: function (el) {
+      // ...
+      this.animateOver = true;
+    },
     reset() {
       this.x = this.x0;
       this.y = this.y0;

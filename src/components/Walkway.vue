@@ -31,14 +31,18 @@
           ></el-option>
         </el-select>
         <el-button @click="handleTips" size="small">游戏说明</el-button>
+        
         <el-button class="about" @click="handleAbout" size="small" plan>关于</el-button>
+        <autoplay></autoplay>
       </div>
     </footer>
+    
   </div>
 </template>
 
 <script>
 import fig from "./Figure.vue";
+import autoplay from "./AudioPlay.vue";
 import { LAYOUTS } from "../lib/CONSTANT";
 export default {
   data() {
@@ -55,7 +59,8 @@ export default {
     };
   },
   components: {
-    fig
+    fig,
+    autoplay
   },
   computed: {
     styleObj() {
@@ -371,7 +376,6 @@ export default {
   },
   mounted() {
     let vm = this;
-    console.log(11, this);
     this.datas = this.options[0].value;
     window.onresize = function() {
       vm.screenHeight = window.innerHeight;
