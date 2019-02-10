@@ -6,6 +6,7 @@
     background-color: #fff; 
     &.isEmpty {
         background-color: #E6A23C;
+        z-index: 2;
     }
     &::hover {
         border-color: #E4E7ED;

@@ -314,7 +314,8 @@ export default {
         if (
           this.personWidth == 2 &&
           blankX2 + 1 == blankX &&
-          blankY == blankY2
+          blankY == blankY2 &&
+          (this.personY + 1 == blankY || this.personY - 1 == blankY)
         ) {
           /**
            * 1 1    ? 0

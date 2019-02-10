@@ -78,7 +78,7 @@ const STAYEAST = [
     { uid: 'xb3', name: 'xiaobing', width: 1, height: 1, x0: 3, y0: 3 },
     { uid: 'xb4', name: 'xiaobing', width: 1, height: 1, x0: 3, y0: 2 },
     { uid: 'huangzhong', name: 'huangzhong', width: 1, height: 2, x0: 1, y0: 3 },
-    { uid: 'empty1', name: 'empty', width: 1, height: 1, x0: 1, y0: 4, isEmpty: true },
+    { uid: 'empty1', name: 'empty', width: 1, height: 1, x0: 3, y0: 4, isEmpty: true },
     { uid: 'empty2', name: 'empty', width: 1, height: 1, x0: 2, y0: 4, isEmpty: true }
 ]
 
