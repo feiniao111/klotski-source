@@ -315,11 +315,12 @@ export default {
           this.personWidth == 2 &&
           blankX2 + 1 == blankX &&
           blankY == blankY2 &&
-          (this.personY + 1 == blankY || this.personY - 1 == blankY)
+          (this.personY + this.personHeight == blankY || this.personY - 1 == blankY)
         ) {
           /**
-           * 1 1    ? 0
-           * ? 0    1 1
+           * 1 1  1 1  ? 0
+           * ? 0  1 1  1 1
+           *      ? 0
            */
           // 考虑 空白横向相邻时， 上、下移
           let newBlankY =

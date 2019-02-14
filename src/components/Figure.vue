@@ -1,6 +1,15 @@
 <!-- 人物 -->
 <template>
-  <figure class="person" :style="styleObj" :class="classObj" @click="handleClick">
+  <!-- dragover.prevent必须有，否则drop事件不触发 -->
+  <!-- dragStart, drop为PC端拖曳事件 -->
+  <!-- touchstart, touchend为移动端拖曳事件 -->
+  <figure class="person" :style="styleObj" :class="classObj" 
+  @click="handleClick" 
+  @dragstart="handleDragStart" 
+  @dragover.prevent 
+  @drop="handleDrop"
+  @touchstart="handleDragStart"
+  @touchend="handleTouchend">
       <i class="banner" v-if="!isEmpty" v-show="active"></i>
       <!-- <img :src='"../assets/img/" + name + ".svg"' style="width: 100%; height: 100%" v-if="!isEmpty"> -->
       <!-- <iframe :src='"../assets/img/" + name + ".svg"' width="100%" height="100%" type="image/svg+xml" v-if="!isEmpty"> 
@@ -16,7 +25,6 @@
 
       <strong v-if="x==1&&y==4&&isEmpty">出</strong>
       <strong v-else-if="x==2&&y==4&&isEmpty">口</strong>
-      
   </figure>
 </template>
 
@@ -47,7 +55,9 @@ export default {
       animateOver: false,
       isSafari: /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent),
       isIphoneWechatEmbed: (/iPhone/.test(navigator.userAgent) || (/iPad/.test(navigator.userAgent))) 
-                            && /MicroMessenger/.test(navigator.userAgent)
+                            && /MicroMessenger/.test(navigator.userAgent),
+      clientX: 0,
+      clientY: 0                      
     };
   },
   computed: {
@@ -120,6 +130,24 @@ export default {
       } else {
         this.reqAction();
       }
+    },
+    handleDragStart(event) {
+      this.clientX = event.clientX;
+      this.clientY = event.clientY;
+      console.log(11, event, 22);
+      if (!this.isEmpty) {
+        this.handleClick();
+      }
+      return false;
+    },
+    handleDrop(event) {
+      console.log(this.x, this.y);
+      if (this.isEmpty) {
+        this.handleClick();
+      }
+    },
+    handleTouchend(event, e) {
+      console.log(111, event, e, 222)
     },
     reqAction() {
       this.$emit(
