@@ -117,8 +117,8 @@ export default {
         this.count = 0;
         this.activeUid = "";
         this.$nextTick(() => {
-          for (let i = 0; i < value.length; i++) {
-            let uid = value[i].uid;
+          for (let i = 0; i < this.datas.length; i++) {
+            let uid = this.datas[i].uid;
             if (this.$refs[uid]) {
               this.$refs[uid][0].reset();
             }
