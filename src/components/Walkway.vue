@@ -16,13 +16,14 @@
         :active="activeUid == item.uid"
         @reqAction="handleReq"
         @movAction="handleMov"
+        @judAction="handleJud"
       ></fig>
     </section>
     <footer class="walkway__footer">
       <div class="walkway__footer--operation">
         <span class="count">第{{count}}步</span>
         <el-button @click="handleReset" size="small">重新开始</el-button>
-        <el-select v-model="datas" placeholder="请选择" class="select">
+        <el-select v-model="datas" placeholder="请选择" class="select" @change="handleChangeLayout">
           <el-option
             v-for="(item, index) in options"
             :key="index"
@@ -31,18 +32,30 @@
           ></el-option>
         </el-select>
         <el-button @click="handleTips" size="small">游戏说明</el-button>
-        
-        <el-button class="about" @click="handleAbout" size="small" plan>关于</el-button>
         <autoplay></autoplay>
       </div>
     </footer>
-    
+    <el-dialog
+      custom-class="dialog-about"
+      title="游戏说明"
+      :width="dialogWidth"
+      :visible.sync="dialogVisible"
+    >
+      <about></about>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
+    <audio id="moveSound" class="walkway--sound">
+      <source src="static/mp3/Se23.wav" id="houseMoving" type="audio/wav">
+    </audio>
   </div>
 </template>
 
 <script>
 import fig from "./Figure.vue";
 import autoplay from "./AudioPlay.vue";
+import about from "./GameAbout.vue";
 import { LAYOUTS } from "../lib/CONSTANT";
 export default {
   data() {
@@ -55,12 +68,16 @@ export default {
       screenHeight: window.innerHeight,
       count: 0,
       options: LAYOUTS,
-      datas: []
+      datas: [],
+      oldDatas: [],
+      dialogVisible: false,
+      dialogWidth: "95%"
     };
   },
   components: {
     fig,
-    autoplay
+    autoplay,
+    about
   },
   computed: {
     styleObj() {
@@ -72,6 +89,33 @@ export default {
   watch: {
     datas: {
       handler(value, oldvalue) {
+        this.oldDatas = oldvalue;
+        // this.$nextTick(() => {
+        //   for (let i = 0; i < value.length; i++) {
+        //     let uid = value[i].uid;
+        //     if (this.$refs[uid]) {
+        //       this.$refs[uid][0].reset();
+        //     }
+        //   }
+        // });
+      },
+      deep: true
+    }
+  },
+  methods: {
+    handleChangeLayout(val) {
+      this.$confirm(
+        "更换布局将重新开始游戏！是否确定更换?",
+        "提示",
+        {
+          dangerouslyUseHTMLString: true,
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      ).then(() => {
+        this.count = 0;
+        this.activeUid = "";
         this.$nextTick(() => {
           for (let i = 0; i < value.length; i++) {
             let uid = value[i].uid;
@@ -80,29 +124,18 @@ export default {
             }
           }
         });
-      },
-      deep: true
-    }
-  },
-  methods: {
-    handleAbout() {
-      const h = this.$createElement;
-
-      this.$msgbox({
-        title: "关于",
-        message: h("p", null, [
-          h(
-            "p",
-            null,
-            "采用H5+vue编写，参考4399小游戏华容道：http://www.4399.com/flash/14016_3.htm"
-          )
-        ]),
-        showCancelButton: false,
-        confirmButtonText: "确定"
+      }).catch(() => {
+        this.datas = this.oldDatas;
       });
+    },
+    movePlay() {
+      let sound = document.getElementById("moveSound");
+      sound.play();
     },
     handleTips() {
       const h = this.$createElement;
+      this.dialogVisible = true;
+      return;
       this.$msgbox({
         title: "游戏说明",
         message: h("p", null, [
@@ -137,18 +170,57 @@ export default {
             "p",
             { style: "color: #E6A23C;margin-left: 20px;" },
             "曹操跑的快，小兵追的勤。"
-          )
+          ),
+          h("p", { style: "height: 20px;" }, ""),
+          h("p", null, [
+            h("p", null, "设计：界面参考4399小游戏华容道："),
+            h("a", null, "http://www.4399.com/flash/14016_3.htm。")
+          ]),
+          h("p", { style: "height: 20px;" }, ""),
+          h("p", null, [
+            h("p", null, "源码：采用H5+vue编写:"),
+            h("a", null, "https://github.com/feiniao111/klotski-source。")
+          ]),
+          h("p", { style: "height: 20px;" }, ""),
+          h("p", null, "图片：新浪某微博（找不到出处了），非商用，侵删。"),
+          h("p", { style: "height: 20px;" }, ""),
+          h("p", null, "音乐：三国志刘备传mod，非商用，侵删。"),
+          h("p", { style: "height: 20px;" }, ""),
+          h("p", null, "反馈：不足之处，还请海涵，欢迎提建议~")
         ]),
         showCancelButton: false,
         confirmButtonText: "确定"
-      });
+      })
+        .then(() => {
+          document
+            .getElementsByClassName("el-message-box")[0]
+            .removeEventListener("touchmove", () => {});
+        })
+        .catch(() => {
+          if (document.getElementsByClassName("el-message-box")) {
+            document
+              .getElementsByClassName("el-message-box")[0]
+              .removeEventListener("touchmove", () => {});
+          }
+        });
+
+      document
+        .getElementsByClassName("el-message-box")[0]
+        .addEventListener("touchmove", () => {}, { passive: true });
     },
     handleReset() {
-      this.$confirm("是否要重新开始", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(() => {
+      this.$confirm(
+        "<div><p>是否要重新开始?</p>" +
+          "<i style='font-size: 10px; color: #999'>(作者很菜但从不点，别轻易放弃，加油！)</i>" +
+          "</div>",
+        "提示",
+        {
+          dangerouslyUseHTMLString: true,
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      ).then(() => {
         this.count = 0;
         this.activeUid = "";
         for (let i = 0; i < this.datas.length; i++) {
@@ -165,6 +237,7 @@ export default {
       this.personHeight = personHeight;
     },
     handleMov(emUid, blankX, blankY) {
+      let hasMove = false;
       if (this.activeUid == "") {
         return;
       }
@@ -198,6 +271,7 @@ export default {
             let newPersonY = this.personY > blankY ? blankY : this.personY + 1;
             emInst.setY(newBlankY);
             actInst.setY(newPersonY);
+            hasMove = true;
           } else if (this.personWidth == 2) {
             /**
              * 1 1        0 ?
@@ -215,6 +289,7 @@ export default {
               emInst.setY(newBlankY);
               emInst2.setY(newBlankY);
               actInst.setY(newPersonY);
+              hasMove = true;
             }
           }
         } else if (
@@ -235,6 +310,7 @@ export default {
                */
               emInst.setY(this.personY);
               actInst.setY(blankY);
+              hasMove = true;
             } else if (this.personHeight == 2) {
               /**
                * 1    0
@@ -245,6 +321,7 @@ export default {
               emInst.setY(this.personY + 1);
               emInst2.setY(this.personY);
               actInst.setY(blankY2 > blankY ? blankY : blankY2);
+              hasMove = true;
             }
           }
         }
@@ -266,6 +343,7 @@ export default {
             let newPersonX = this.personX > blankX ? blankX : this.personX + 1;
             emInst.setX(newBlankX);
             actInst.setX(newPersonX);
+            hasMove = true;
           } else if (this.personHeight == 2) {
             /**
              * 1 0          0 1
@@ -282,6 +360,7 @@ export default {
               emInst.setX(newBlankX);
               emInst2.setX(newBlankX);
               actInst.setX(newPersonX);
+              hasMove = true;
             }
           }
         } else if (
@@ -300,6 +379,7 @@ export default {
                */
               emInst.setX(this.personX);
               actInst.setX(blankX);
+              hasMove = true;
             } else if (this.personWidth == 2) {
               /**
                * 1 1 0 0        0 0  1 1
@@ -307,6 +387,7 @@ export default {
               emInst.setX(this.personX + 1);
               emInst2.setX(this.personX);
               actInst.setX(blankX2 > blankX ? blankX : blankX2);
+              hasMove = true;
             }
           }
         }
@@ -315,7 +396,8 @@ export default {
           this.personWidth == 2 &&
           blankX2 + 1 == blankX &&
           blankY == blankY2 &&
-          (this.personY + this.personHeight == blankY || this.personY - 1 == blankY)
+          (this.personY + this.personHeight == blankY ||
+            this.personY - 1 == blankY)
         ) {
           /**
            * 1 1  1 1  ? 0
@@ -329,6 +411,7 @@ export default {
           emInst.setY(newBlankY);
           emInst2.setY(newBlankY);
           actInst.setY(newPersonY);
+          hasMove = true;
         } else if (this.personY + 1 == blankY) {
           /**
            * 1 ?    ? 1
@@ -346,6 +429,7 @@ export default {
             emInst.setX(newBlankX);
             emInst2.setX(newBlankX);
             actInst.setX(newPersonX);
+            hasMove = true;
           }
         }
       } else if (this.personX + 2 == blankX || this.personX - 2 == blankX) {
@@ -353,11 +437,17 @@ export default {
           emInst.setX(this.personX);
           emInst2.setX(this.personX);
           actInst.setX(this.personX + 1);
+          hasMove = true;
         }
       }
 
-      // 统计步数
-      this.count++;
+      if (hasMove) {
+        // 统计步数
+        this.count++;
+        // 播放移动声效
+        this.movePlay();
+      }
+
       // 若曹操走到出口，游戏结束
       if (this.activeUid == "caocao") {
         let personX = actInst.getX();
@@ -374,13 +464,30 @@ export default {
           );
         }
       }
+    },
+    handleJud(tarX, tarY) {
+      let empNode1 = this.$refs["empty1"][0];
+      let empNode2 = this.$refs["empty2"][0];
+      let [emptyX1, emptyY1] = [empNode1.getX(), empNode1.getY()];
+      let [emptyX2, emptyY2] = [empNode2.getX(), empNode2.getY()];
+      if (tarX == emptyX1 && tarY == emptyY1) {
+        empNode1.handleClick();
+      } else if (tarX == emptyX2 && tarY == emptyY2) {
+        empNode2.handleClick();
+      }
     }
   },
   mounted() {
     let vm = this;
     this.datas = this.options[0].value;
+    if (window.innerWidth > 500) {
+      this.dialogWidth = "50%";
+    }
     window.onresize = function() {
       vm.screenHeight = window.innerHeight;
+      if (window.innerWidth > 500) {
+        this.dialogWidth = "50%";
+      }
     };
   }
 };

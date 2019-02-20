@@ -1,0 +1,28 @@
+.about {
+    &__header {
+        color: green; 
+        text-align: center
+    }
+    &__instruction {
+        &--1 {
+            color: #E6A23C;
+        }
+        &--2 {
+            color: #E6A23C;
+            margin-left: 20px;
+        }
+        &--3 {
+            color: #E6A23C;
+            margin-left: 40px;
+        }
+        &--4 {
+            color: #E6A23C;
+            margin-left: 20px;
+        }
+    }
+    &__resource {
+        &--1 {
+            margin: 20px 0;
+        }
+    }
+}

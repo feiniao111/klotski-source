@@ -1,5 +1,8 @@
 <template>
-  <div id="audioBox"></div>
+  <div class="AudioPlay">
+    <el-button round size="small" @click="handleClick">{{opertion}}</el-button>
+    <div id="audioBox"></div>
+  </div>
 </template>
 
 <style>
@@ -24,27 +27,39 @@ export default {
         "static/mp3/34-AudioTrack 34.mp3",
         "static/mp3/35-AudioTrack 35.mp3"
       ],
-      myAudio: "",
-      index: 0
+      myAudio: new Audio(),
+      index: 0,
+      opertion: '列'
     };
   },
   methods: {
     playEndedHandler() {
+      this.index = this.nextIndex();
       this.myAudio.src = this.playList[this.index];
-      this.index = (this.index + 1) % this.playList.length;
       this.myAudio.play();
-      !this.playList.length &&
-        myAudio.removeEventListener("ended", this.playEndedHandler, false); //只有一个元素时解除绑定
     },
     play() {
-      this.myAudio = new Audio();
       this.myAudio.controls = true;
-      this.myAudio.src = this.playList[this.index]; //每次读数组最后一个元素
-      this.index = (this.index + 1) % this.playList.length;
+      this.myAudio.src = this.playList[this.index];
       this.myAudio.addEventListener("ended", this.playEndedHandler, false);
       document.getElementById("audioBox").appendChild(this.myAudio);
       this.myAudio.autoplay = true;
-      this.myAudio.loop = false; //禁止循环，否则无法触发ended事件
+      this.myAudio.loop = false; 
+    },
+    nextIndex() {
+      if (this.opertion == '单') {
+        return this.index;
+      } else {
+        return (this.index + 1) % this.playList.length;
+      }
+    },
+    handleClick() {
+      this.opertion = this.opertion == '单' ? '列' : '单';
+      if (this.opertion == '列') {
+        this.myAudio.loop = false;
+      } else {
+        this.myAudio.loop = true;
+      }
     }
   },
   mounted() {

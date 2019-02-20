@@ -1,0 +1,12 @@
+.AudioPlay {
+    button {
+        margin-right: 5px;
+    }
+}
+#audioBox {
+    audio {
+        @media screen and (max-width: 500px) {
+            width: 265px;
+        }
+    }
+}

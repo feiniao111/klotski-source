@@ -1,27 +1,36 @@
 .walkway {
     &__content {
         position: relative;
-        height: 90%;
+        height: 80%;
         width: 90%;
         margin: 0 auto;
     }
 
     &__footer {
-        padding: 0 20px;
+        height: 20%;
+        padding: 0 2px;
         &--operation {
-            float: left;
+            display: flex;
+            display: -webkit-flex;
+            flex-wrap: wrap;
+            padding-top: 10px;
             width: 100%;
+            justify-content: space-between;
+            align-items: flex-start;
             .count {
-                margin-right: 25px;
+                // margin-right: 25px;
             }
             .select {
-                width: 120px;
-                margin-left: 25px;
-                margin-right: 25px;
+                width: 105px;
+                // margin-left: 25px;
+                // margin-right: 25px;
             }
             .about {
-                float: right;
+                // float: right;
             }
         }
+    }
+    &--sound {
+        display: none;
     }
 }

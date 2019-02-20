@@ -3,35 +3,41 @@
   <!-- dragover.prevent必须有，否则drop事件不触发 -->
   <!-- dragStart, drop为PC端拖曳事件 -->
   <!-- touchstart, touchend为移动端拖曳事件 -->
-  <figure class="person" :style="styleObj" :class="classObj" 
-  @click="handleClick" 
-  @dragstart="handleDragStart" 
-  @dragover.prevent 
-  @drop="handleDrop"
-  @touchstart="handleDragStart"
-  @touchend="handleTouchend">
-      <i class="banner" v-if="!isEmpty" v-show="active"></i>
-      <!-- <img :src='"../assets/img/" + name + ".svg"' style="width: 100%; height: 100%" v-if="!isEmpty"> -->
-      <!-- <iframe :src='"../assets/img/" + name + ".svg"' width="100%" height="100%" type="image/svg+xml" v-if="!isEmpty"> 
-      </iframe> -->
-      <!-- <object :data='"../assets/img/" + name + ".svg"' width="100%" height="100%" type="image/svg+xml" /> -->
-
-        <!-- <object data="svgDemo.svg" type="image/svg+xml" /> 
-        <iframe src="svgDemo.svg" /> -->
-
-      <img :src='"../assets/img/" + name + ".svg"' style="width: 100%; height: 100%" v-if="!isEmpty&&isSVGAvail">
-      <!--safari无法下载svg的img-->
-      <i :class="'person--' + name" v-else-if="!isEmpty&&!isSVGAvail"></i>
-
-      <strong v-if="x==1&&y==4&&isEmpty">出</strong>
-      <strong v-else-if="x==2&&y==4&&isEmpty">口</strong>
+  <figure
+    class="person"
+    :style="styleObj"
+    :class="classObj"
+    @click="handleClick"
+    @dragstart="handleDragStart"
+    @dragover.prevent
+    @drop="handleDrop"
+    @touchstart="handleTouchStart"
+    @touchend="handleTouchend"
+  >
+    <i class="banner" v-if="!isEmpty" v-show="active"></i>
+    <!-- <img :src='"../assets/img/" + name + ".svg"' style="width: 100%; height: 100%" v-if="!isEmpty"> -->
+    <!-- <iframe :src='"../assets/img/" + name + ".svg"' width="100%" height="100%" type="image/svg+xml" v-if="!isEmpty"> 
+    </iframe>-->
+    <!-- <object :data='"../assets/img/" + name + ".svg"' width="100%" height="100%" type="image/svg+xml" /> -->
+    <!-- <object data="svgDemo.svg" type="image/svg+xml" /> 
+    <iframe src="svgDemo.svg" />-->
+    <img
+      :src='"../assets/img/" + name + ".svg"'
+      style="width: 100%; height: 100%"
+      v-if="!isEmpty&&isSVGAvail"
+    >
+    <!--safari无法下载svg的img-->
+    <i :class="'person--' + name" v-else-if="!isEmpty&&!isSVGAvail"></i>
+    
+    <strong v-if="x==1&&y==4&&isEmpty">出</strong>
+    <strong v-else-if="x==2&&y==4&&isEmpty">口</strong>
   </figure>
 </template>
 
 
 <script>
 const unitLenW = 100 / 4.0;
-const unitLenH = 90 / 5.0;
+const unitLenH = 100 / 5.0;
 const unit = "%";
 export default {
   props: {
@@ -53,27 +59,30 @@ export default {
       x: this.x0,
       y: this.y0,
       animateOver: false,
-      isSafari: /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent),
-      isIphoneWechatEmbed: (/iPhone/.test(navigator.userAgent) || (/iPad/.test(navigator.userAgent))) 
-                            && /MicroMessenger/.test(navigator.userAgent),
+      isSafari:
+        /Safari/.test(navigator.userAgent) &&
+        !/Chrome/.test(navigator.userAgent),
+      isIphoneWechatEmbed:
+        (/iPhone/.test(navigator.userAgent) ||
+          /iPad/.test(navigator.userAgent)) &&
+        /MicroMessenger/.test(navigator.userAgent),
       clientX: 0,
-      clientY: 0                      
+      clientY: 0
     };
   },
   computed: {
     isSVGAvail() {
-      return !this.isSafari&&!this.isIphoneWechatEmbed;
+      return !this.isSafari && !this.isIphoneWechatEmbed;
     },
     styleObj() {
-      
       return {
         left: this.x * unitLenW + unit,
         top: this.y * unitLenH + unit,
         // transform: translate(this.x * unitLenW + unit, this.y * unitLenH + unit),
         width: this.width * unitLenW + unit,
         height: this.height * unitLenH + unit,
-        transitionProperty: 'left,top',
-        transitionDuration: this.isEmpty ? 0 : '0.8s'
+        transitionProperty: "left,top",
+        transitionDuration: this.isEmpty ? 0 : "0.8s"
       };
     },
     classObj() {
@@ -84,14 +93,6 @@ export default {
     }
   },
   methods: {
-    beforeEnter: function (el) {
-      // ...
-      this.animateOver = false;
-    },
-    afterEnter: function (el) {
-      // ...
-      this.animateOver = true;
-    },
     reset() {
       this.x = this.x0;
       this.y = this.y0;
@@ -146,8 +147,49 @@ export default {
         this.handleClick();
       }
     },
-    handleTouchend(event, e) {
-      console.log(111, event, e, 222)
+    handleTouchStart(event) {
+      if (this.isEmpty) {
+        return;
+      }
+      if (event.changedTouches && event.changedTouches.length > 0) {
+        this.clientX = event.changedTouches[0].clientX;
+        this.clientY = event.changedTouches[0].clientY;
+      } else {
+        this.clientX = this.clientY = undefined;
+      }
+      console.log(77, event, 88);
+      this.handleClick();
+      return false;
+    },
+    handleTouchend(event) {
+      if (this.isEmpty) {
+        return;
+      }
+      console.log(111, event, 222);
+      let tmpx;
+      let tmpy;
+      if (event.changedTouches && event.changedTouches.length > 0) {
+        tmpx = event.changedTouches[0].clientX;
+        tmpy = event.changedTouches[0].clientY;
+      } else {
+        tmpx = tmpy = undefined;
+      }
+
+      if (this.clientX == tmpx && this.clientY == tmpy) {
+        // 未发生移动
+        return;
+      }
+      let [tarX, tarY] = this.calPoint(tmpx, tmpy);
+      console.log("a", tarX, tarY, "b");
+      this.judAction(tarX, tarY);
+    },
+    calPoint(clientX, clientY) {
+      let width = window.innerWidth;
+      let height = window.innerHeight;
+      return [
+        parseInt((clientX - width * 0.05) / (width * 0.25)),
+        parseInt((clientY + 0.0) / (height * 0.16))
+      ];
     },
     reqAction() {
       this.$emit(
@@ -161,6 +203,10 @@ export default {
     },
     movAction() {
       this.$emit("movAction", this.uid, this.x, this.y);
+    },
+    // 像父组件请求坐标所在 是否为空格，若是空格，期望发生移动
+    judAction(tarX, tarY) {
+      this.$emit("judAction", tarX, tarY);
     }
   }
 };

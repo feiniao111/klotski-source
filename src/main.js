@@ -13,12 +13,14 @@ import {
     Select,
     Option,
     OptionGroup,
+    Dialog
 }
     from 'element-ui';
 Vue.use(Button);
 Vue.use(Select);
 Vue.use(Option);
 Vue.use(OptionGroup);
+Vue.use(Dialog);
 Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$alert = MessageBox.alert;
 Vue.prototype.$confirm = MessageBox.confirm;
