@@ -13,70 +13,51 @@
 .person {
   &--caocao {
     display: inline-block;
-    // width: 156px;
-    // height: 158px;
-    background: url($caocao) no-repeat;
+    // background: url($caocao) no-repeat;
     width: 100%;
     height: 100%;
     background-size: 100%;
   }
   &--zhangfei {
     display: inline-block;
-    // width: 156px;
-    // height: 168px;
     width: 100%;
     height: 100%;
-    background: center center url($zhangfei) no-repeat;
+    // background: center center url($zhangfei) no-repeat;
     background-size: 100%;
   }
   &--zhaoyun {
     display: inline-block;
-    // width: 138px;
-    // height: 169px;
     width: 100%;
     height: 100%;
-    
-    background: center center url($zhaoyun) no-repeat;
+    // background: center center url($zhaoyun) no-repeat;
     background-size: 100%;
   }
   &--machao {
     display: inline-block;
-    // width: 149px;
-    // height: 150px;
     width: 100%;
     height: 100%;
-    
-    background: center center url($machao) no-repeat;
+    // background: center center url($machao) no-repeat;
     background-size: 100%;
   }
   &--guanyu {
     display: inline-block;
-    // width: 134px;
-    // height: 89px;
     width: 100%;
     height: 100%;
-    
-    background: center center url($guanyu) no-repeat;
+    // background: center center url($guanyu) no-repeat;
     background-size: 100%;
   }
   &--huangzhong {
     display: inline-block;
-    // width: 114px;
-    // height: 154px;
     width: 100%;
     height: 100%;
-    
-    background: center center url($huangzhong) no-repeat;
+    // background: center center url($huangzhong) no-repeat;
     background-size: 100%;
   }
   &--xiaobing {
     display: inline-block;
-    // width: 94px;
-    // height: 84px;
     width: 100%;
     height: 100%;
-    
-    background: center center url($xiaobing) no-repeat;
+    // background: center center url($xiaobing) no-repeat;
     background-size: 100%;
   }
 }

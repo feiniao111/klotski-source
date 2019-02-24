@@ -22,7 +22,7 @@
         <a
         >https://github.com/feiniao111/klotski-source。</a>
       </p>
-      <p class="about__resource--1">图片：新浪某微博（找不到出处了），非商用，侵删。</p>
+      <p class="about__resource--1">图片：我图网（已购买使用权），非商用。</p>
       <p class="about__resource--1">音乐：三国志刘备传mod，非商用，侵删。</p>
       <p class="about__resource--1">反馈：不足之处，还请海涵，欢迎提建议~</p>
     </section>

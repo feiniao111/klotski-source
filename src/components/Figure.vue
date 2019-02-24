@@ -21,13 +21,20 @@
     <!-- <object :data='"../assets/img/" + name + ".svg"' width="100%" height="100%" type="image/svg+xml" /> -->
     <!-- <object data="svgDemo.svg" type="image/svg+xml" /> 
     <iframe src="svgDemo.svg" />-->
-    <img
+
+    <!-- <img
       :src='"../assets/img/" + name + ".svg"'
       style="width: 100%; height: 100%"
       v-if="!isEmpty&&isSVGAvail"
+    > -->
+    <img
+      :src='"static/images/" + name + ".svg"'
+      style="width: 100%; height: 100%"
+      v-if="!isEmpty&&isSVGAvail&&screenWidth>1030"
     >
     <!--safari无法下载svg的img-->
-    <i :class="'person--' + name" v-else-if="!isEmpty&&!isSVGAvail"></i>
+    <!-- <i :class="'person--' + name" v-else-if="!isEmpty&&!isSVGAvail"></i> -->
+    <img :src="personImg" :class="personClass" v-else-if="!isEmpty"/>
     
     <strong v-if="x==1&&y==4&&isEmpty">出</strong>
     <strong v-else-if="x==2&&y==4&&isEmpty">口</strong>
@@ -71,6 +78,15 @@ export default {
     };
   },
   computed: {
+    screenWidth() {
+      return window.innerWidth;
+    },
+    personImg() {
+      return 'static/images/' + this.name + '.png';
+    },
+    personClass() {
+      return 'person--' + this.name;
+    },
     isSVGAvail() {
       return !this.isSafari && !this.isIphoneWechatEmbed;
     },
