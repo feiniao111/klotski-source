@@ -4,6 +4,9 @@
     margin: 0;
     position: absolute;
     background-color: #fff; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
     &.isEmpty {
         background-color: #E6A23C;
         z-index: 2;
@@ -18,6 +21,8 @@
 
     .banner {
         position: absolute;
+        left: 0;
+        top: 0;
     }
 
     strong {

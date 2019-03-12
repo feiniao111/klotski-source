@@ -1,6 +1,6 @@
 <!--游戏说明-->
 <template>
-  <section class="about" @touchstart="handleTouchStart" @touchmove="handleTouchmove">
+  <section class="about" @touchstart="handleTouchStart" @touchmove="moveFunc">
     <h1 class="about__header">华容道</h1>
     <section class="about__instruction">
       <p class="about__instruction--1">玩法： 通过两个小空格移动棋子，将曹操移出华容道（也就是把最大的方块移到最下方中央位置）。</p>
@@ -30,11 +30,13 @@
 </template>
 
 <script>
+import {debounce} from '@/lib/utils/util';
 export default {
   data() {
     return {
       clientX: 0,
-      clientY: 0
+      clientY: 0,
+      moveFunc: function() {}
     };
   },
   methods: {
@@ -71,6 +73,11 @@ export default {
       this.clientX = tmpx;
       this.clientY = tmpy;
     }
+  },
+  mounted() {
+    this.moveFunc = debounce((events) => {
+      this.handleTouchmove(events);
+    });
   }
 };
 </script>

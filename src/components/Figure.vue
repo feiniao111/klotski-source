@@ -14,30 +14,22 @@
     @touchstart="handleTouchStart"
     @touchend="handleTouchend"
   >
-    <i class="banner" v-if="!isEmpty" v-show="active"></i>
-    <!-- <img :src='"../assets/img/" + name + ".svg"' style="width: 100%; height: 100%" v-if="!isEmpty"> -->
-    <!-- <iframe :src='"../assets/img/" + name + ".svg"' width="100%" height="100%" type="image/svg+xml" v-if="!isEmpty"> 
-    </iframe>-->
-    <!-- <object :data='"../assets/img/" + name + ".svg"' width="100%" height="100%" type="image/svg+xml" /> -->
-    <!-- <object data="svgDemo.svg" type="image/svg+xml" /> 
-    <iframe src="svgDemo.svg" />-->
-
-    <!-- <img
-      :src='"../assets/img/" + name + ".svg"'
-      style="width: 100%; height: 100%"
-      v-if="!isEmpty&&isSVGAvail"
-    > -->
-    <img
-      :src='"static/images/" + name + ".svg"'
-      style="width: 100%; height: 100%"
-      v-if="!isEmpty&&isSVGAvail&&screenWidth>1030"
-    >
-    <!--safari无法下载svg的img-->
-    <!-- <i :class="'person--' + name" v-else-if="!isEmpty&&!isSVGAvail"></i> -->
-    <img :src="personImg" :class="personClass" v-else-if="!isEmpty"/>
-    
-    <strong v-if="x==1&&y==4&&isEmpty">出</strong>
-    <strong v-else-if="x==2&&y==4&&isEmpty">口</strong>
+    <template v-if="!isEmpty">
+      <template v-if="imgLoaded">
+        <i class="banner" v-show="active"></i>
+        <img
+          :src='personSvg'
+          style="width: 100%; height: 100%"
+          v-if="isSVGAvail&&screenWidth>1030"
+        >
+        <img :src="personImg" :class="personClass" v-else/>
+      </template>
+      <i v-else class="el-icon-loading"></i>
+    </template>
+    <template v-else>
+      <strong v-if="x==1&&y==4">出</strong>
+      <strong v-else-if="x==2&&y==4">口</strong>
+    </template>
   </figure>
 </template>
 
@@ -74,7 +66,8 @@ export default {
           /iPad/.test(navigator.userAgent)) &&
         /MicroMessenger/.test(navigator.userAgent),
       clientX: 0,
-      clientY: 0
+      clientY: 0,
+      imgLoaded: false
     };
   },
   computed: {
@@ -83,6 +76,9 @@ export default {
     },
     personImg() {
       return 'static/images/' + this.name + '.png';
+    },
+    personSvg() {
+      return 'static/images/' + this.name + '.svg';
     },
     personClass() {
       return 'person--' + this.name;
@@ -223,6 +219,18 @@ export default {
     // 像父组件请求坐标所在 是否为空格，若是空格，期望发生移动
     judAction(tarX, tarY) {
       this.$emit("judAction", tarX, tarY);
+    }
+  },
+  mounted() {
+    let img = new Image;
+    img.onload = () => {
+      this.imgLoaded = true;
+    }
+
+    if (!this.isEmpty && this.isSVGAvail && this.screenWidth > 1030) {
+      img.src = this.personSvg;
+    } else if (!this.isEmpty) {
+      img.src = this.personImg;
     }
   }
 };
