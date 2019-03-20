@@ -1,5 +1,13 @@
 # klotski-source
-klotski项目的源代码,采用vue编写
+klotski项目的源代码,采用vue + ElementUI编写，可以自适应不同屏幕，支持在Android、iphone、微信内嵌、ipad、PC上玩耍
+
+## 游戏截图
+![游戏截图](https://github.com/feiniao111/klotski-source/blob/master/screen.png)
+
+## 玩法
+1. 点击一个人物，然后点击空格（黄色格子），如果具备空间合适，则人物将移动到该空格处  
+2. 也可以直接按住人物进行拖动  
+3. 将曹操移动到最小方的两个空格处，游戏获胜  
 
 ## Build Setup
 
