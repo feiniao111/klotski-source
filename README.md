@@ -2,7 +2,7 @@
 H5小游戏klotski（华容道）的源代码,采用vue + ElementUI编写，可以自适应不同屏幕，支持在Android、iphone、微信内嵌、ipad、PC上玩耍
 
 ## 游戏截图
-![游戏截图](https://github.com/feiniao111/klotski-source/blob/master/screen.png)
+![游戏截图](https://raw.githubusercontent.com/feiniao111/gallery/master/klotski_screen.png)
 
 ## 打开方式
 访问<a href="https://feiniao111.github.io/klotski" target="_blank">https://feiniao111.github.io/klotski</a>
